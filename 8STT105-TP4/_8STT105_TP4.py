@@ -17,11 +17,11 @@ class Modele(object):
             self.bframe = Frame(self.frame)
             self.bframe.pack(side = TOP)
             self.gframe = Frame(self.frame, bd = 2, relief = RAISED)
-            self.g = Canvas(self.gframe, bg = 'white', width = self.canvas_size[0], height = self.canvas_size[1]) 
+            self.g = Canvas(self.gframe, bg = "white", width = self.canvas_size[0], height = self.canvas_size[1]) 
             self.g.pack()
-            self.g.bind('<ButtonPress-1>', self.onClick1) #Click 1 (left)
-            self.g.bind('<ButtonPress-2>', self.onClick2) #Click 2 (centre)
-            self.g.bind('<ButtonPress-3>', self.onClick3) #Click 3 (right)
+            self.g.bind("<ButtonPress-1>", self.onClick1) #Click 1 (left)
+            self.g.bind("<ButtonPress-2>", self.onClick2) #Click 2 (centre)
+            self.g.bind("<ButtonPress-3>", self.onClick3) #Click 3 (right)
             self.gframe.pack(side = TOP)
             self.g.delete(ALL) #Clean du canvas
         else: 
@@ -42,15 +42,16 @@ class Modele(object):
     def init_modele(self): #Init du modele
         self.n = 25 #Nombre de pas de simulation
         self.i = 0 #Variable d'etat
+        self.borderColor = "lawn green"
 
     def update(self): #Update du 
         pass #TODO: Ajouter la logique pour un step ici
 
     def render(self, g): #Rendering du modele dans le canvas Tk g
-        bfont = ('times', 14, 'bold')
+        bfont = ("times", 14, "bold")
         bbox = (100, 100, 125, 125) #TODO: update this in update() to move the block
-        g.create_rectangle(bbox, width = 1, outline = "black", fill = "white")
-        g.create_text((bbox[0] + 12.5, bbox[1] + 12.5), text = str(self.i % 10), font = bfont, fill = 'grey')
+        g.create_rectangle(bbox, width = 1, outline = self.borderColor, fill = "gray75")
+        g.create_text((bbox[0] + 12.5, bbox[1] + 12.5), text = str(self.i % 10), font = bfont, fill = "gray5")
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
@@ -58,7 +59,12 @@ class Modele(object):
             self.update() 
             #Rendering tkinter
             if self.g is not None: 
-                self.g.delete(ALL) #Commenter ceci pour laisser chaque step affiché
+                if self.i == self.n - 1:
+                    self.borderColor = "tomato"
+                elif self.i > 0:
+                    self.borderColor = "gray5"
+
+                #self.g.delete(ALL) #Commenter ceci pour laisser chaque step affiché
                 self.render(self.g)
                 self.g.update()
                 sleep(self.refreshTk)
