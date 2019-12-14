@@ -2,13 +2,12 @@ import sys
 from tkinter import *
 from time import sleep
 
-doRenderTk = True #Choix de faire un rendering Tk ou pas
+doRenderTk = True #Enable graphic rendering
 
 class Modele(object):
     def __init__(self, master = None):
-        self.init_modele() #init du modele lui-meme
-        #Canvas pour le rendering graphique 
-        if master is not None: #Fenetre de rendering si necessaire
+        self.initModel()
+        if master is not None: #Graphic rendering
             self.frame = Frame(master)
             self.frame.pack()
             self.bframe = Frame(self.frame)
@@ -16,34 +15,34 @@ class Modele(object):
             self.gframe = Frame(self.frame, bd = 2, relief = RAISED)
             self.g = Canvas(self.gframe, bg = self.backgroundColor, width = self.windowSize[0], height = self.windowSize[1]) 
             self.g.pack()
-            self.g.bind("<ButtonPress-1>", self.onClick1) #Click 1 (left)
-            self.g.bind("<ButtonPress-2>", self.onClick2) #Click 2 (centre)
-            self.g.bind("<ButtonPress-3>", self.onClick3) #Click 3 (right)
+            self.g.bind("<ButtonPress-1>", self.onClick1) #Left click
+            self.g.bind("<ButtonPress-2>", self.onClick2) #Middle click
+            self.g.bind("<ButtonPress-3>", self.onClick3) #Right click
             self.gframe.pack(side = TOP)
-            self.g.delete(ALL) #Clean du canvas
+            self.g.delete(ALL)
         else: 
             self.g = None
 
     def onClick2(self, event):
-        #On sleep pendant 1 a 60 secondes proportionnel a x, d'un click centre
+        #Sleep from 1 to 60s on middle click
         sleep(int(60 * event.x // self.windowSize[0]) + 1)
 
     def onClick1(self, event):
-        #On ralenti l'affichage d'un % proportionnel a x (i.e. 0 a 100%), d'un click left
+        #Slow down from 0 to 100% on left click
         self.tick *= 1.0 + event.x / self.windowSize[0]
 
     def onClick3(self, event):
-        #On accelere l'affichage d'un % proportionnel a x (i.e. 0 a 100%), d'un click right
+        #Speed up from 0 to 100% on right click
         self.tick *= 0.5 * event.x / self.windowSize[0]
 
-    def init_modele(self): #Init du modele
-        self.n = 10 #Nombre de pas de simulation
-        self.i = 0 #Variable d'etat
-        self.borderColor = "medium sea green" #borderColorStart
+    def initModel(self):
+        self.n = 10 #Number of step (while i < n)
+        self.i = 0 #Current step
+        self.borderColorDefault = "gray5" #Box border
+        self.borderColor = "medium sea green" #borderColorStart and borderColorCurrent
         self.borderColorEnd = "indian red"
-        self.borderColorDefault = "gray5"
         self.borderColorActive = "gold"
-        self.fillColor = "Gray75"
+        self.fillColor = "Gray75" #Box fill
         self.textColor = "gray5"
         self.font = "times"
         self.fontSize = 14
@@ -53,15 +52,15 @@ class Modele(object):
         self.boxSize = 25
         self.spacing = 2
         self.windowSize = (1280, 960)
-        self.startWait = 3
+        self.startWait = 3 #Pause at launch
         self.tick = 1.0
-        self.backgroundColor = "white"
-        self.clearAfterEach = False
+        self.backgroundColor = "white" #Window background
+        self.clearAfterEach = False #Disable to see a path forming
 
-    def update(self): #Update du 
-        self.x += self.boxSize + self.spacing #TODO: Ajouter la logique pour un step ici
+    def update(self): #Model update after each tick
+        self.x += self.boxSize + self.spacing #TODO: Add step logic here (left, right etc.)
 
-    def render(self, g): #Rendering du modele dans le canvas Tk g
+    def render(self, g): #Render a box at the current coordinates
         bfont = (self.font, self.fontSize, self.fontWeight)
         bbox = (self.x, self.y, self.x + self.boxSize, self.y + self.boxSize)
         g.create_rectangle(bbox, width = 2, outline = self.borderColor, fill = self.fillColor)
@@ -69,10 +68,8 @@ class Modele(object):
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
-            # On opere le systeme pour un pas
             self.update() 
-            #Rendering tkinter
-            if self.g is not None: 
+            if self.g is not None: #Rendering
                 if self.i == self.n - 1:
                     self.borderColor = self.borderColorEnd
                 elif self.i > 0:
@@ -85,18 +82,18 @@ class Modele(object):
                 self.g.update()
                 sleep(self.tick)
 
-                if self.i == 0: #Petite pause au premier pas pour voir l'état initial
+                if self.i == 0:
                     sleep(self.startWait)
 
-#A executer seulement si ce n'est pas un import, mais bien un run du code
+#Execute on run, not on import
 if __name__ == '__main__':
-    if doRenderTk: #Avec rendering Tk (animation)
+    if doRenderTk: #Graphic rendering enabled
         root = Tk()
         root.geometry("+0+0")
         root.title("8STT105-TP4")
     else: 
         root = None
-    x = Modele(root) #Creation du modele
-    x.run() #Run du modele (simulation) avec ou sans animation
+    x = Modele(root)
+    x.run()
     if root is not None: 
         root.mainloop()
