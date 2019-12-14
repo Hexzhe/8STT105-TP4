@@ -1,6 +1,7 @@
 import sys
 from tkinter import *
 from time import sleep
+from secrets import randbelow
 
 doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
@@ -39,14 +40,14 @@ class Modele(object):
 
     def initModel(self):
         #Core
-        self.tick = 1.0 #Global speed
-        self.n = 10 #Number of step (while i < n)
+        self.tick = 0.2 #Global speed
+        self.n = 10000 #Number of step (while i < n)
         self.i = 0 #Current step
         self.x = 628 #Start X
         self.y = 468 #Start Y
-        self.boxSize = 25 #Determine the x and y move size even in non-graphic mode
-        self.spacing = 2 #Determine the x and y added padding (on top of boxSize) even in non-graphic mode
-        self.startWait = 3 #Pause at launch
+        self.boxSize = 2 #Determine the x and y move size even in non-graphic mode
+        self.spacing = 3 #Determine the x and y added padding (on top of boxSize) even in non-graphic mode
+        self.startWait = 0 #Pause at launch
 
         #Graphic
         self.borderWidth = 2
@@ -59,11 +60,19 @@ class Modele(object):
         self.font = "times"
         self.fontSize = self.boxSize // 2
         self.fontWeight = "bold"
-        self.hideText = False
+        self.hideText = True
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
-        self.x += self.boxSize + self.spacing
+        rand = randbelow(4)
+        if rand == 0: #North
+            self.y += self.boxSize + self.spacing
+        if rand == 1: #South
+            self.y -= self.boxSize + self.spacing
+        if rand == 2: #East
+            self.x -= self.boxSize + self.spacing
+        if rand == 3: #West
+            self.x += self.boxSize + self.spacing
 
     def render(self, g): #Render a box at the current coordinates
         bfont = (self.font, self.fontSize, self.fontWeight)
