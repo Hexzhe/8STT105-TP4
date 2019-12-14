@@ -40,16 +40,17 @@ class Modele(object):
 
     def initModel(self):
         #Core
-        self.tick = 0.2 #Global speed
+        self.tick = 1 #Global speed
         self.n = 10000 #Number of step (while i < n)
         self.i = 0 #Current step
         self.x = 628 #Start X
         self.y = 468 #Start Y
-        self.boxSize = 2 #Determine the x and y move size even in non-graphic mode
-        self.spacing = 3 #Determine the x and y added padding (on top of boxSize) even in non-graphic mode
+        self.boxSize = 10 #Determine the x and y move size even in non-graphic mode
+        self.spacing = 0 #Determine the x and y added padding (on top of boxSize) even in non-graphic mode
         self.startWait = 0 #Pause at launch
 
         #Graphic
+        self.orientation = 0 #0=N, 1=S, 2=E, 3=W
         self.borderWidth = 2
         self.borderColorDefault = "gray5" #Box border
         self.borderColor = "medium sea green" #borderColorStart and borderColorCurrent
@@ -64,22 +65,31 @@ class Modele(object):
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
-        rand = randbelow(4)
-        if rand == 0: #North
+        self.orientation = randbelow(4)
+        if self.orientation == 0: #North
             self.y += self.boxSize + self.spacing
-        if rand == 1: #South
+        if self.orientation == 1: #South
             self.y -= self.boxSize + self.spacing
-        if rand == 2: #East
+        if self.orientation == 2: #East
             self.x -= self.boxSize + self.spacing
-        if rand == 3: #West
+        if self.orientation == 3: #West
             self.x += self.boxSize + self.spacing
 
     def render(self, g): #Render a box at the current coordinates
-        bfont = (self.font, self.fontSize, self.fontWeight)
-        bbox = (self.x, self.y, self.x + self.boxSize, self.y + self.boxSize)
-        g.create_rectangle(bbox, width = self.borderWidth, outline = self.borderColor, fill = self.fillColor)
+        if self.orientation == 0: #North
+            line = (self.x, self.y, self.x, self.y - self.boxSize)
+        if self.orientation == 1: #South
+            line = (self.x, self.y, self.x, self.y + self.boxSize)
+        if self.orientation == 2: #East
+            line = (self.x, self.y, self.x + self.boxSize, self.y)
+        if self.orientation == 3: #West
+            line = (self.x, self.y, self.x - self.boxSize, self.y)
+
+        g.create_line(line, width = self.borderWidth, fill = self.borderColor)
+        
         if not self.hideText:
-            g.create_text((bbox[0] + (self.boxSize / 2), bbox[1] + (self.boxSize / 2)), text = str(self.i % 10), font = bfont, fill = self.textColor)
+            font = (self.font, self.fontSize, self.fontWeight)
+            g.create_text((bbox[0] + (self.boxSize / 2), bbox[1] + (self.boxSize / 2)), text = str(self.i % 10), font = font, fill = self.textColor)
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
