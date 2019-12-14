@@ -1,3 +1,4 @@
+""" Renderin d'un modele avec Tkinter. """
 import sys
 from tkinter import *
 from time import sleep
@@ -76,3 +77,4 @@ if __name__ == '__main__':
     x = Modele(root) # creation du modele
     x.run() # run du modele (simulation) avec ou sans animation
     if root is not None: root.mainloop()
+
