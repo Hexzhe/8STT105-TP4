@@ -32,7 +32,7 @@ class Modele(object):
         sleep(int(60 * event.x // self.canvas_size[0]) + 1)
 
     def onClick1(self, event):
-        #On ralentie l'affichage d'un % proportionnel a x (i.e. 0 a 100%), d'un click left
+        #On ralenti l'affichage d'un % proportionnel a x (i.e. 0 a 100%), d'un click left
         self.refreshTk *= 1.0 + event.x / self.canvas_size[0]
 
     def onClick3(self, event):
@@ -40,21 +40,20 @@ class Modele(object):
         self.refreshTk *= 0.5 * event.x / self.canvas_size[0]
 
     def init_modele(self): #Init du modele
-        self.nbPas = 5 #Nombre de pas de simulation
-        self.etat = 0 #Variable d'etat
+        self.n = 25 #Nombre de pas de simulation
+        self.i = 0 #Variable d'etat
 
-    def update(self): #Update du modele
-        self.etat = self.etat + 1 #Mise a jour de l'etat du modele
-        #TODO: Ajouter la logique pour un step ici
+    def update(self): #Update du 
+        pass #TODO: Ajouter la logique pour un step ici
 
     def render(self, g): #Rendering du modele dans le canvas Tk g
         bfont = ('times', 14, 'bold')
-        bbox = (100, 100, 100, 100)
-        g.create_rectangle(bbox, width = 1, outline = "black", fill = "yellow")
-        g.create_text((bbox[0] + 25, bbox[1] + 20), text = str(self.etat), font = bfont, fill = 'black')
+        bbox = (100, 100, 125, 125) #TODO: update this in update() to move the block
+        g.create_rectangle(bbox, width = 1, outline = "black", fill = "white")
+        g.create_text((bbox[0] + 12.5, bbox[1] + 12.5), text = str(self.i % 10), font = bfont, fill = 'grey')
 
     def run(self): #Boucle de simulation de la dynamique
-        for i in range(self.nbPas):
+        for self.i in range(self.n):
             # On opere le systeme pour un pas
             self.update() 
             #Rendering tkinter
@@ -63,8 +62,9 @@ class Modele(object):
                 self.render(self.g)
                 self.g.update()
                 sleep(self.refreshTk)
-                if i==0: 
-                    sleep(self.waitTk) #On attends pour laisser voir l'etat initial
+
+                if self.i == 0: #Petite pause au premier pas pour voir l'état initial
+                    sleep(self.waitTk)
 
 #A executer seulement si ce n'est pas un import, mais bien un run du code
 if __name__ == '__main__':
