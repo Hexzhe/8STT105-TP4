@@ -59,6 +59,7 @@ class Modele(object):
         self.font = "times"
         self.fontSize = self.boxSize // 2
         self.fontWeight = "bold"
+        self.hideText = False
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
@@ -68,7 +69,8 @@ class Modele(object):
         bfont = (self.font, self.fontSize, self.fontWeight)
         bbox = (self.x, self.y, self.x + self.boxSize, self.y + self.boxSize)
         g.create_rectangle(bbox, width = self.borderWidth, outline = self.borderColor, fill = self.fillColor)
-        g.create_text((bbox[0] + (self.boxSize / 2), bbox[1] + (self.boxSize / 2)), text = str(self.i % 10), font = bfont, fill = self.textColor)
+        if not self.hideText:
+            g.create_text((bbox[0] + (self.boxSize / 2), bbox[1] + (self.boxSize / 2)), text = str(self.i % 10), font = bfont, fill = self.textColor)
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
