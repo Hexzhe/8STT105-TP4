@@ -34,15 +34,15 @@ class Model(object):
 
     def onClick2(self, event):
         #Sleep from 1 to 60s on middle click
-        sleep(int(60 * event.x // windowSize[0]) + 1)
+        sleep(int(60 * event.x // self.canevasSize[0]) + 1)
 
     def onClick1(self, event):
         #Slow down from 0 to 100% on left click
-        self.tick *= 1.0 + event.x / windowSize[0]
+        self.tick *= 1.0 + event.x / self.canevasSize[0]
 
     def onClick3(self, event):
         #Speed up from 0 to 100% on right click
-        self.tick *= 0.5 * event.x / windowSize[0]
+        self.tick *= 0.5 * event.x / self.canevasSize[0]
 
     def initModel(self): #Change settings here
         #Core
