@@ -57,6 +57,7 @@ class Model(object):
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
         self.points = [(self.x, self.y)] #Point history
+        self.isDeadlock = False
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -68,8 +69,6 @@ class Model(object):
         self.clearAfterEach = False #Disable to see a path forming
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
-
-        self.isDeadlock = False
 
     def writeResult(self):
         f = open("ResourceFiles/Results/result-walk-self-avoiding.csv", "a+")

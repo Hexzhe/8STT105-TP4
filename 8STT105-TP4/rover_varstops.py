@@ -3,6 +3,7 @@ import os
 from tkinter import *
 from time import sleep
 import random
+import csv
 
 def popupmsg(msg, title):
     popup = Tk()
@@ -61,6 +62,7 @@ class Model(object):
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
         self.points = [(self.x, self.y)] #Point history
+        self.isDeadlock = False
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -73,10 +75,18 @@ class Model(object):
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
         self.orientations = [self.orientation] #Orientation history
-        self.stopOdds = 0.05 #The odd to stop evaluated every minute (i) (Poisson)
-        self.stopDurationSample = [1, 2, 3, 4, 5] #Upon stop, a duration will be randomly picked (Uniform distribution)
+        self.stopOdds = 0.0 #The odd to stop evaluated every minute (i) (Poisson)
+        self.stopDurationSample = [] #Upon stop, a duration will be randomly picked (Uniform distribution)
 
-        self.isDeadlock = False
+        with open('ResourceFiles/arrets.csv') as csv_file: #Fill stop settings from data
+            csv_reader = csv.reader(csv_file, delimiter = ",")
+            c = 0
+            period = 120 * 60 #The file contain data for 120 days with one data per day
+            for row in csv_reader:
+                c += 1
+                if row[1] not in self.stopDurationSample:
+                    self.stopDurationSample.append(row[1]) #Duration
+            self.stopOdds = c / period
 
     def writeResult(self):
         f = open("ResourceFiles/Results/result-rover-varstops.csv", "a+")

@@ -61,6 +61,7 @@ class Model(object):
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
         self.points = [(self.x, self.y)] #Point history
+        self.isDeadlock = False
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -73,8 +74,6 @@ class Model(object):
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
         self.orientations = [self.orientation] #Orientation history
-
-        self.isDeadlock = False
 
     def writeResult(self):
         f = open("ResourceFiles/Results/result-rover-varspeed.csv", "a+")

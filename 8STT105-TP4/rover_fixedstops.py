@@ -61,6 +61,7 @@ class Model(object):
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
         self.points = [(self.x, self.y)] #Point history
+        self.isDeadlock = False
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -75,8 +76,6 @@ class Model(object):
         self.orientations = [self.orientation] #Orientation history
         self.stopOdds = 0.05 #The odd to stop evaluated every minute (i) (Poisson)
         self.stopDuration = 5 #Upon stop, will skip this amound of i/time/minute (won't pause the drawing)
-
-        self.isDeadlock = False
 
     def writeResult(self):
         f = open("ResourceFiles/Results/result-rover-fixedstops.csv", "a+")
