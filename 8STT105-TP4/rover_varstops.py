@@ -74,7 +74,7 @@ class Model(object):
         self.canevasBackgroundColor = "white"
         self.orientations = [self.orientation] #Orientation history
         self.stopOdds = 0.05 #The odd to stop evaluated every minute (i) (Poisson)
-        self.stopDuration = 5 #Upon stop, will skip this amound of i/time/minute (won't pause the drawing)
+        self.stopDurationSample = [1, 2, 3, 4, 5] #Upon stop, a duration will be randomly picked (Uniform distribution)
 
         self.isDeadlock = False
 

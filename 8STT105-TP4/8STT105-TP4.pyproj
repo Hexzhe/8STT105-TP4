@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="rover_varstops.py" />
     <Compile Include="rover_fixedstops.py">
       <SubType>Code</SubType>
     </Compile>
