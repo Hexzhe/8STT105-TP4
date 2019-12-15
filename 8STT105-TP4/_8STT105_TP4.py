@@ -1,7 +1,7 @@
 from tkinter import *
 import walk_random as wr
 import walk_nonreversing as wnr
-import walk_self_avoiding as wsa
+import walk_selfavoiding as wsa
 import rover_varspeed as rvs
 
 doRenderTk = True #Enable graphic rendering
