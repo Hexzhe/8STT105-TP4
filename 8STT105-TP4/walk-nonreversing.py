@@ -7,7 +7,8 @@ doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
 backgroundColor = "white"
 
-class Modele(object):
+
+class Model(object):
     def __init__(self, master = None):
         self.initModel()
         if master is not None: #Graphic rendering
@@ -116,7 +117,7 @@ if __name__ == '__main__':
         root.title("8STT105-TP4")
     else: 
         root = None
-    x = Modele(root)
+    x = Model(root)
     x.run()
     if root is not None: 
         root.mainloop()
