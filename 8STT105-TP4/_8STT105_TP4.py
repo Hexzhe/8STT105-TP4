@@ -50,7 +50,7 @@ class Modele(object):
         self.startWait = 0 #Pause at launch
 
         #Graphic
-        self.orientation = 0 #0=N, 1=S, 2=E, 3=W
+        self.orientation = 0 #0=N, 1=W, 2=S, 3=E
         self.borderWidth = 2
         self.borderColorDefault = "gray5" #Box border
         self.borderColor = "medium sea green" #borderColorStart and borderColorCurrent
@@ -67,22 +67,22 @@ class Modele(object):
         self.orientation = randbelow(4)
         if self.orientation == 0: #North
             self.y += self.boxSize + self.spacing
-        elif self.orientation == 1: #South
-            self.y -= self.boxSize + self.spacing
-        elif self.orientation == 2: #East
-            self.x -= self.boxSize + self.spacing
-        elif self.orientation == 3: #West
+        elif self.orientation == 1: #West
             self.x += self.boxSize + self.spacing
+        elif self.orientation == 2: #South
+            self.y -= self.boxSize + self.spacing
+        elif self.orientation == 3: #East
+            self.x -= self.boxSize + self.spacing
 
     def render(self, g): #Render a box at the current coordinates
         if self.orientation == 0: #North
             line = (self.x, self.y, self.x, self.y - self.boxSize)
-        elif self.orientation == 1: #South
-            line = (self.x, self.y, self.x, self.y + self.boxSize)
-        elif self.orientation == 2: #East
-            line = (self.x, self.y, self.x + self.boxSize, self.y)
-        elif self.orientation == 3: #West
+        elif self.orientation == 1: #West
             line = (self.x, self.y, self.x - self.boxSize, self.y)
+        elif self.orientation == 2: #South
+            line = (self.x, self.y, self.x, self.y + self.boxSize)
+        elif self.orientation == 3: #East
+            line = (self.x, self.y, self.x + self.boxSize, self.y)
 
         g.create_line(line, width = self.borderWidth, fill = self.borderColor)
 
