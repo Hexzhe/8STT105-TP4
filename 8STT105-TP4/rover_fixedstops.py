@@ -79,9 +79,9 @@ class Model(object):
         self.isDeadlock = False
 
     def writeResult(self):
-        f = open("ResourceFiles/Results/result-rover-varspeed.csv", "a+")
+        f = open("ResourceFiles/Results/result-rover-fixedstops.csv", "a+")
 
-        if os.stat("ResourceFiles/Results/result-rover-varspeed.csv").st_size == 0:
+        if os.stat("ResourceFiles/Results/result-rover-fixedstops.csv").st_size == 0:
             f.write("i;targetN;n;startX;startY;endX;endY\n")
 
         f.write(str(self.i + 1) + ";" + str(self.targetN) + ";" + str(self.n) + ";" + str(self.points[0][0]) + ";" + str(self.points[0][1]) + ";" + str(self.points[len(self.points) - 1][0]) + ";" + str(self.points[len(self.points) - 1][1]) + "\n")
@@ -209,4 +209,4 @@ class Model(object):
                 finalCount = self.i
             self.writeResult()
             sleep(self.pauseLength)
-        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-rover-varspeed.csv for results.\nYou can now exit.", "Done!")
+        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-rover-fixedstops.csv for results.\nYou can now exit.", "Done!")
