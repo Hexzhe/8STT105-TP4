@@ -2,6 +2,7 @@ import sys
 import os
 from tkinter import *
 from time import sleep
+import random
 
 def popupmsg(msg, title):
     popup = Tk()
@@ -55,6 +56,7 @@ class Model(object):
         self.y = 468 #Start Y
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
+        self.points = [(self.x, self.y)] #Point history
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -67,9 +69,6 @@ class Model(object):
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
 
-        self.points = []
-        self.points.append((self.x, self.y)) #Mark the first point as visited
-
     def writeResult(self):
         f = open("ResourceFiles/Results/result-walk-random.csv", "a+")
 
@@ -80,7 +79,7 @@ class Model(object):
         f.close()
 
     def update(self): #Model update after each tick
-        self.orientation = randbelow(4)
+        self.orientation = random.randint(0, 3)
 
         if self.orientation == 0: #North
             self.y += (self.lineLength + self.lineSpacing)
