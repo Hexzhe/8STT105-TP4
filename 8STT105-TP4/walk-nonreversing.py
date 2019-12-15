@@ -7,7 +7,6 @@ doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
 backgroundColor = "white"
 
-
 class Model(object):
     def __init__(self, master = None):
         self.initModel()
@@ -51,7 +50,6 @@ class Model(object):
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
-        self.previousOrientation = self.orientation
         self.borderWidth = 2
         self.lineColorDefault = "gray5"
         self.lineColor = "medium sea green" #Set different than default to highlight the first line
@@ -60,9 +58,9 @@ class Model(object):
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
-        self.previousOrientation = self.orientation
+        previousOrientation = self.orientation
         self.orientation = randbelow(4)
-        while (self.orientation != self.previousOrientation and (self.previousOrientation % 2 == self.orientation % 2)):
+        while (self.orientation != previousOrientation and (previousOrientation % 2 == self.orientation % 2)):
             self.orientation = randbelow(4)
 
         if self.orientation == 0: #North

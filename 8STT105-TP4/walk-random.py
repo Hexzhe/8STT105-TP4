@@ -7,7 +7,6 @@ doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
 backgroundColor = "white"
 
-
 class Model(object):
     def __init__(self, master = None):
         self.initModel()
