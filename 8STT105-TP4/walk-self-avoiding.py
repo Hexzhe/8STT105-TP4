@@ -81,7 +81,7 @@ class Model(object):
         if os.stat("ResourceFiles/Results/result-walk-self-avoiding.csv").st_size == 0:
             f.write("i;targetN;n;startX;startY;endX;endY\n")
 
-        f.write(str(self.i) + ";" + str(self.targetN) + ";" + str(self.n) + ";" + str(self.points[0][0]) + ";" + str(self.points[0][1]) + ";" + str(self.points[len(self.points) - 1][0]) + ";" + str(self.points[len(self.points) - 1][1]) + "\n")
+        f.write(str(self.i + 1) + ";" + str(self.targetN) + ";" + str(self.n) + ";" + str(self.points[0][0]) + ";" + str(self.points[0][1]) + ";" + str(self.points[len(self.points) - 1][0]) + ";" + str(self.points[len(self.points) - 1][1]) + "\n")
         f.close()
 
     def checkDeadlock(self):
@@ -185,7 +185,7 @@ class Model(object):
                 finalCount = self.i
             self.writeResult()
             sleep(self.pauseLength)
-        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-self-avoiding.csv for results.", "Done!")
+        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-self-avoiding.csv for results.\nYou can now exit.", "Done!")
 
 #Execute on run, not on import
 if __name__ == '__main__':
