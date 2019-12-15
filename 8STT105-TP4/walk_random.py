@@ -2,7 +2,6 @@ import sys
 import os
 from tkinter import *
 from time import sleep
-from secrets import randbelow
 
 def popupmsg(msg, title):
     popup = Tk()

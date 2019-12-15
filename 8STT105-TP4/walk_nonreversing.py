@@ -2,7 +2,7 @@ import sys
 import os
 from tkinter import *
 from time import sleep
-from secrets import randbelow
+import random
 
 def popupmsg(msg, title):
     popup = Tk()
@@ -88,7 +88,7 @@ class Model(object):
         first = True
         while first or ((self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2))):
             first = False
-            self.orientation = randbelow(4)
+            self.orientation = random.randint(0, 3)
 
             if self.orientation == 0: #North
                 self.x = previousX
