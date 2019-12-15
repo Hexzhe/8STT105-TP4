@@ -21,13 +21,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="walk-nonreversing.py">
+    <Compile Include="walk_nonreversing.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="walk-random.py">
+    <Compile Include="walk_random.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="walk-self-avoiding.py">
+    <Compile Include="walk_self-avoiding.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="_8STT105_TP4.py" />
