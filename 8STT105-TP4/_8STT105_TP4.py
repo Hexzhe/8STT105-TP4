@@ -9,6 +9,15 @@ windowSize = "1280x960+0+0"
 canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
 backgroundColor = "white"
 
+def popupmsg(msg, title):
+    popup = Tk()
+    popup.wm_title(title)
+    label = Label(popup, text=msg, font=("Verdana", 10))
+    label.pack(side="top", fill="x", pady=10)
+    B1 = Button(popup, text="OK", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
 class Model(object):
     def __init__(self, master = None):
         self.initModel()
@@ -176,7 +185,7 @@ class Model(object):
                 finalCount = self.i
             self.writeResult()
             sleep(self.pauseLength)
-        quit() #Will throw an exception in debug, but make non-debugging more smooth
+        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-self-avoiding.csv for results.", "Done!")
 
 #Execute on run, not on import
 if __name__ == '__main__':
