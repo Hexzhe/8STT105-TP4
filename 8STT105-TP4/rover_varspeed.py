@@ -55,11 +55,12 @@ class Model(object):
         self.x = 628 #Start X
         self.y = 468 #Start Y
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
-        self.lineSpacing = 2 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
+        self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
         self.speedMin = 1 #Minimum speed
         self.speed = self.speedMin #The number of line generated in a single tick (startSpeed)
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
+        self.points = [(self.x, self.y)] #Point history
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -71,9 +72,8 @@ class Model(object):
         self.clearAfterEach = False #Disable to see a path forming
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
+        self.orientations = [self.orientation] #Orientation history
 
-        self.points = []
-        self.points.append((self.x, self.y)) #Mark the first point as visited
         self.isDeadlock = False
 
     def writeResult(self):
@@ -137,18 +137,19 @@ class Model(object):
                 self.y = previousY
 
         self.points.append((self.x, self.y))
+        self.orientations.append(self.orientation)
 
     def render(self, g): #Render a line at the current coordinates
         j = self.speed
         for j in range(1, j + 1):
-            if self.orientation == 0: #North
-                line = ((self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1]))
-            elif self.orientation == 1: #West
-                line = ((self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1]))
-            elif self.orientation == 2: #South
-                line = ((self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1]))
-            elif self.orientation == 3: #East
-                line = ((self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1]))
+            if self.orientations[(len(self.points) - 1) - (j - 1)] == 0: #North
+                line = (self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1] + self.lineSpacing)
+            elif self.orientations[(len(self.points) - 1) - (j - 1)] == 1: #West
+                line = (self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0] + self.lineSpacing, self.points[(len(self.points) - 2) - (j - 1)][1])
+            elif self.orientations[(len(self.points) - 1) - (j - 1)] == 2: #South
+                line = (self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0], self.points[(len(self.points) - 2) - (j - 1)][1] - self.lineSpacing)
+            elif self.orientations[(len(self.points) - 1) - (j - 1)] == 3: #East
+                line = (self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0] - self.lineSpacing, self.points[(len(self.points) - 2) - (j - 1)][1])
 
             g.create_line(line, width = self.borderWidth, fill = self.lineColor)
 
