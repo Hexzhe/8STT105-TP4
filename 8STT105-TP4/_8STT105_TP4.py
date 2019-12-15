@@ -45,57 +45,52 @@ class Modele(object):
         self.i = 0 #Current step
         self.x = 628 #Start X
         self.y = 468 #Start Y
-        self.boxSize = 10 #Determine the x and y move size even in non-graphic mode
-        self.spacing = 0 #Determine the x and y added padding (on top of boxSize) even in non-graphic mode
-        self.startWait = 0 #Pause at launch
+        self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
+        self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
+        self.previousOrientation = self.orientation
         self.borderWidth = 2
-        self.borderColorDefault = "gray5" #Box border
-        self.borderColor = "medium sea green" #borderColorStart and borderColorCurrent
-        self.borderColorEnd = "indian red"
-        self.borderColorActive = "gold"
-        self.fillColor = "Gray75" #Box fill
-        self.textColor = "gray5"
-        self.font = "times"
-        self.fontSize = self.boxSize // 2
-        self.fontWeight = "bold"
+        self.lineColorDefault = "gray5"
+        self.lineColor = "medium sea green" #Set different than default to highlight the first line
+        self.lineColorEnd = "indian red"
+        self.lineColorActive = "gold"
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
-        previousOrientation = self.orientation
+        self.previousOrientation = self.orientation
         self.orientation = randbelow(4)
-        while (self.orientation != previousOrientation and (previousOrientation % 2 == self.orientation % 2)):
+        while (self.orientation != self.previousOrientation and (self.previousOrientation % 2 == self.orientation % 2)):
             self.orientation = randbelow(4)
 
         if self.orientation == 0: #North
-            self.y += self.boxSize + self.spacing
+            self.y += self.lineLength + self.lineSpacing
         elif self.orientation == 1: #West
-            self.x += self.boxSize + self.spacing
+            self.x += self.lineLength + self.lineSpacing
         elif self.orientation == 2: #South
-            self.y -= self.boxSize + self.spacing
+            self.y -= self.lineLength + self.lineSpacing
         elif self.orientation == 3: #East
-            self.x -= self.boxSize + self.spacing
+            self.x -= self.lineLength + self.lineSpacing
 
     def render(self, g): #Render a box at the current coordinates
         if self.orientation == 0: #North
-            line = (self.x, self.y, self.x, self.y - self.boxSize)
+            line = (self.x, self.y, self.x, self.y - self.lineLength)
         elif self.orientation == 1: #West
-            line = (self.x, self.y, self.x - self.boxSize, self.y)
+            line = (self.x, self.y, self.x - self.lineLength, self.y)
         elif self.orientation == 2: #South
-            line = (self.x, self.y, self.x, self.y + self.boxSize)
+            line = (self.x, self.y, self.x, self.y + self.lineLength)
         elif self.orientation == 3: #East
-            line = (self.x, self.y, self.x + self.boxSize, self.y)
+            line = (self.x, self.y, self.x + self.lineLength, self.y)
 
-        g.create_line(line, width = self.borderWidth, fill = self.borderColor)
+        g.create_line(line, width = self.borderWidth, fill = self.lineColor)
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
             if self.g is not None: #Pre-rendering
                 if self.i - 1 > 0 and not self.clearAfterEach:
                     self.i -= 1
-                    self.borderColor = self.borderColorDefault
+                    self.lineColor = self.lineColorDefault
                     self.render(self.g)
                     self.i += 1
                 elif self.clearAfterEach:
@@ -105,16 +100,13 @@ class Modele(object):
 
             if self.g is not None: #Rendering
                 if self.i == self.n - 1:
-                    self.borderColor = self.borderColorEnd
+                    self.lineColor = self.lineColorEnd
                 elif self.i > 0:
-                    self.borderColor = self.borderColorActive
+                    self.lineColor = self.lineColorActive
 
                 self.render(self.g)
                 self.g.update()
                 sleep(self.tick)
-
-                if self.i == 0:
-                    sleep(self.startWait)
 
 #Execute on run, not on import
 if __name__ == '__main__':
