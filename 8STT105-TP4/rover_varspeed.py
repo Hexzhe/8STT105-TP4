@@ -70,23 +70,52 @@ class Model(object):
 
         self.points = []
         self.points.append((self.x, self.y)) #Mark the first point as visited
+        self.isDeadlock = False
 
     def writeResult(self):
-        f = open("ResourceFiles/Results/result-walk-nonreversing.csv", "a+")
+        f = open("ResourceFiles/Results/result-walk-self-avoiding.csv", "a+")
 
-        if os.stat("ResourceFiles/Results/result-walk-nonreversing.csv").st_size == 0:
+        if os.stat("ResourceFiles/Results/result-walk-self-avoiding.csv").st_size == 0:
             f.write("i;targetN;n;startX;startY;endX;endY\n")
 
         f.write(str(self.i + 1) + ";" + str(self.targetN) + ";" + str(self.n) + ";" + str(self.points[0][0]) + ";" + str(self.points[0][1]) + ";" + str(self.points[len(self.points) - 1][0]) + ";" + str(self.points[len(self.points) - 1][1]) + "\n")
         f.close()
+
+    def checkDeadlock(self):
+        if self.orientation == 0: #North
+            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
+            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
+            isSouthOk = False
+            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
+        elif self.orientation == 1: #West
+            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
+            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
+            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
+            isEastOk = False
+        elif self.orientation == 2: #South
+            isNorthOk = False
+            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
+            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
+            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
+        elif self.orientation == 3: #East
+            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
+            isWestOk = False
+            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
+            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
+
+        return not (isNorthOk or isWestOk or isSouthOk or isEastOk)
 
     def update(self): #Model update after each tick
         previousOrientation = self.orientation
         previousX = self.x
         previousY = self.y
 
+        if self.checkDeadlock():
+            self.isDeadlock = True
+            return
+
         first = True
-        while first or ((self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2))):
+        while first or ((self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or ((self.x, self.y) in self.points)):
             first = False
             self.orientation = randbelow(4)
 
@@ -105,7 +134,7 @@ class Model(object):
 
         self.points.append((self.x, self.y))
 
-    def render(self, g): #Render a line at the current coordinates
+    def render(self, g): #Render a box at the current coordinates
         if self.orientation == 0: #North
             line = (self.x, self.y, self.x, self.y - self.lineLength)
         elif self.orientation == 1: #West
@@ -136,6 +165,12 @@ class Model(object):
                     self.update()
                 
                     if self.g is not None: #Rendering
+                        if self.isDeadlock:
+                            self.lineColor = self.lineColorEnd
+                            self.render(self.g)
+                            self.g.update()
+                            break
+
                         if self.i == self.n - 1:
                             self.lineColor = self.lineColorEnd
                         elif self.i > 0:
@@ -147,4 +182,4 @@ class Model(object):
                 finalCount = self.i
             self.writeResult()
             sleep(self.pauseLength)
-        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-nonreversing.csv for results.\nYou can now exit.", "Done!")
+        popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-self-avoiding.csv for results.\nYou can now exit.", "Done!")

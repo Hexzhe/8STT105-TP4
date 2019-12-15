@@ -94,7 +94,7 @@ class Model(object):
 
         self.points.append((self.x, self.y))
 
-    def render(self, g): #Render a box at the current coordinates
+    def render(self, g): #Render a line at the current coordinates
         if self.orientation == 0: #North
             line = (self.x, self.y, self.x, self.y - self.lineLength)
         elif self.orientation == 1: #West
