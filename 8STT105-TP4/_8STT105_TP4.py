@@ -63,10 +63,9 @@ class Model(object):
         previousOrientation = self.orientation
         previousX = self.x
         previousY = self.y
-        point = (self.x, self.y)
 
         first = True
-        while first or (self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or point in points:
+        while first or (self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or ((self.x, self.y) in points):
             first = False
             self.orientation = randbelow(4)
 
@@ -82,8 +81,6 @@ class Model(object):
             elif self.orientation == 3: #East
                 self.x = previousX - (self.lineLength + self.lineSpacing)
                 self.y = previousY
-
-            point = (self.x, self.y)
 
         points.append((self.x, self.y))
 
