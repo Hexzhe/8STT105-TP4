@@ -48,8 +48,8 @@ class Model(object):
         #Core
         self.simulationCount = 5 #Number of valid simulation to run back-to-back
         self.pauseLength = 3 #The pause between each simulation
-        self.tick = 1 #Global speed
-        self.n = 40 #Number of step/minute to reach (while i < n)
+        self.tick = 0 #Global speed
+        self.n = 500 #Number of step/minute to reach (while i < n)
         self.targetN = self.n // 4 #Minimum n to consider the simulation successful
         self.i = 0 #Current step/minute
         self.x = 628 #Start X
