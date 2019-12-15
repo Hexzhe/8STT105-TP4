@@ -6,11 +6,12 @@ from secrets import randbelow
 doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
 backgroundColor = "white"
-
+points = []
 
 class Model(object):
     def __init__(self, master = None):
         self.initModel()
+        points.append((self.x, self.y)) #Mark the first point as visited
         if master is not None: #Graphic rendering
             self.frame = Frame(master)
             self.frame.pack()
@@ -51,7 +52,6 @@ class Model(object):
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
-        self.previousOrientation = self.orientation
         self.borderWidth = 2
         self.lineColorDefault = "gray5"
         self.lineColor = "medium sea green" #Set different than default to highlight the first line
@@ -60,31 +60,49 @@ class Model(object):
         self.clearAfterEach = False #Disable to see a path forming
 
     def update(self): #Model update after each tick
-        self.previousOrientation = self.orientation
-        self.orientation = randbelow(4)
-        while (self.orientation != self.previousOrientation and (self.previousOrientation % 2 == self.orientation % 2)):
+        previousOrientation = self.orientation
+        previousX = self.x
+        previousY = self.y
+        point = (self.x, self.y)
+
+        first = True
+        while first or (self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or point in points:
+            first = False
             self.orientation = randbelow(4)
 
-        if self.orientation == 0: #North
-            self.y += self.lineLength + self.lineSpacing
-        elif self.orientation == 1: #West
-            self.x += self.lineLength + self.lineSpacing
-        elif self.orientation == 2: #South
-            self.y -= self.lineLength + self.lineSpacing
-        elif self.orientation == 3: #East
-            self.x -= self.lineLength + self.lineSpacing
+            if self.orientation == 0: #North
+                self.x = previousX
+                self.y = previousY + (self.lineLength + self.lineSpacing)
+            elif self.orientation == 1: #West
+                self.x = previousX + (self.lineLength + self.lineSpacing)
+                self.y = previousY
+            elif self.orientation == 2: #South
+                self.x = previousX
+                self.y = previousY - (self.lineLength + self.lineSpacing)
+            elif self.orientation == 3: #East
+                self.x = previousX - (self.lineLength + self.lineSpacing)
+                self.y = previousY
+
+            point = (self.x, self.y)
+
+        points.append((self.x, self.y))
 
     def render(self, g): #Render a box at the current coordinates
         if self.orientation == 0: #North
             line = (self.x, self.y, self.x, self.y - self.lineLength)
+            line2 = (self.x, self.y, self.x, self.y - 2)
         elif self.orientation == 1: #West
             line = (self.x, self.y, self.x - self.lineLength, self.y)
+            line2 = (self.x, self.y, self.x - 2, self.y)
         elif self.orientation == 2: #South
             line = (self.x, self.y, self.x, self.y + self.lineLength)
+            line2 = (self.x, self.y, self.x, self.y + 2)
         elif self.orientation == 3: #East
             line = (self.x, self.y, self.x + self.lineLength, self.y)
+            line2 = (self.x, self.y, self.x + 2, self.y)
 
         g.create_line(line, width = self.borderWidth, fill = self.lineColor)
+        g.create_line(line2, width = self.borderWidth, fill = self.lineColorEnd)
 
     def run(self): #Boucle de simulation de la dynamique
         for self.i in range(self.n):
