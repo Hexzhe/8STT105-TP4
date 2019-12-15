@@ -56,6 +56,7 @@ class Model(object):
         self.y = 468 #Start Y
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
+        self.points = [(self.x, self.y)] #Point history
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -68,8 +69,6 @@ class Model(object):
         self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
         self.canevasBackgroundColor = "white"
 
-        self.points = []
-        self.points.append((self.x, self.y)) #Mark the first point as visited
         self.isDeadlock = False
 
     def writeResult(self):
