@@ -2,20 +2,22 @@ from tkinter import *
 import walk_random as wr
 import walk_nonreversing as wnr
 import walk_self_avoiding as wsa
+import rover_varspeed as rvs
 
 doRenderTk = True #Enable graphic rendering
 windowSize = "1280x960+0+0"
 
 print("8STT105-TP4 - Jason Gilbert &  Dominique Boivin")
 print("Menu:")
-print("  C - Random")
-print("  S - Nonreversing")
-print("  U - Self-Avoiding")
+print("  C - Walk  - Random")
+print("  S - Walk  - Nonreversing")
+print("  U - Walk  - Self-Avoiding")
+print("  V - Rover - Variable speed")
 
 valid = False
 while not valid:
     menuChoice = str(input(">")).upper()
-    valid = (menuChoice == "C" or menuChoice == "S" or menuChoice == "U")
+    valid = (menuChoice == "C" or menuChoice == "S" or menuChoice == "U" or menuChoice == "V")
 
 if doRenderTk: #Graphic rendering enabled
     root = Tk()
@@ -31,6 +33,8 @@ elif menuChoice == "S":
     model = wnr.Model(root)
 elif menuChoice == "U":
     model = wsa.Model(root)
+elif menuChoice == "V":
+    model = rvs.Model(root)
 
 model.run()
 if root is not None: 
