@@ -4,11 +4,6 @@ from tkinter import *
 from time import sleep
 from secrets import randbelow
 
-doRenderTk = True #Enable graphic rendering
-windowSize = "1280x960+0+0"
-canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
-backgroundColor = "white"
-
 def popupmsg(msg, title):
     popup = Tk()
     popup.wm_title(title)
@@ -27,7 +22,7 @@ class Model(object):
             self.bframe = Frame(self.frame)
             self.bframe.pack(side = TOP)
             self.gframe = Frame(self.frame, bd = 2, relief = RAISED)
-            self.g = Canvas(self.gframe, bg = backgroundColor, width = canevasSize[0], height = canevasSize[1]) 
+            self.g = Canvas(self.gframe, bg = self.canevasBackgroundColor, width = self.canevasSize[0], height = self.canevasSize[1]) 
             self.g.pack()
             self.g.bind("<ButtonPress-1>", self.onClick1) #Left click
             self.g.bind("<ButtonPress-2>", self.onClick2) #Middle click
@@ -70,6 +65,8 @@ class Model(object):
         self.lineColorEnd = "indian red"
         self.lineColorActive = "gold"
         self.clearAfterEach = False #Disable to see a path forming
+        self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
+        self.canevasBackgroundColor = "white"
 
         self.points = []
         self.points.append((self.x, self.y)) #Mark the first point as visited
@@ -186,16 +183,3 @@ class Model(object):
             self.writeResult()
             sleep(self.pauseLength)
         popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-walk-self-avoiding.csv for results.\nYou can now exit.", "Done!")
-
-#Execute on run, not on import
-if __name__ == '__main__':
-    if doRenderTk: #Graphic rendering enabled
-        root = Tk()
-        root.geometry(windowSize)
-        root.title("8STT105-TP4")
-    else: 
-        root = None
-    x = Model(root)
-    x.run()
-    if root is not None: 
-        root.mainloop()

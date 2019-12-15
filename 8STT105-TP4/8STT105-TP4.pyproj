@@ -27,7 +27,7 @@
     <Compile Include="walk_random.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="walk_self-avoiding.py">
+    <Compile Include="walk_self_avoiding.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="_8STT105_TP4.py" />
