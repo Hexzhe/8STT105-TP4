@@ -41,7 +41,7 @@ class Modele(object):
     def initModel(self):
         #Core
         self.tick = 0.1 #Global speed
-        self.n = 10000 #Number of step (while i < n)
+        self.n = 1000 #Number of step (while i < n)
         self.i = 0 #Current step
         self.x = 628 #Start X
         self.y = 468 #Start Y
