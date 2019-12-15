@@ -45,6 +45,17 @@ class Model(object):
         #Speed up from 0 to 100% on right click
         self.tick *= 0.5 * event.x / self.canevasSize[0]
 
+    def fillStopDurationSample(self):
+        with open('ResourceFiles/arrets.csv') as csv_file: #Fill stop settings from data
+            csv_reader = csv.reader(csv_file, delimiter = ",")
+            c = 0
+            period = 120 * (60 * 24) #The file contain data for 120 days with one data per day
+            for row in csv_reader:
+                c += 1
+                if row[1] not in self.stopDurationSample:
+                    self.stopDurationSample.append(int(row[1])) #Duration
+            self.stopOdds = c / period
+
     def initModel(self): #Settings that are initialized once
         #Core
         self.simulationCount = 5 #Number of valid simulation to run back-to-back
@@ -57,6 +68,9 @@ class Model(object):
         self.speedMin = 1 #Minimum speed. Speed represent the number of point drawn in a single step (i)
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
+        self.stopOdds = 0.0 #The odd to stop, evaluated every step (i) (Poisson)
+        self.stopDurationSample = [] #Upon stop, a duration will be randomly picked (Uniform distribution)
+        fillStopDurationSample()
 
         #Graphic
         self.lineWidth = 2 #The width of the line drawn
@@ -66,18 +80,6 @@ class Model(object):
         self.clearAfterEachLine = False #Disable to make lines persistend and see a path forming
         self.canevasSize = (1920, 1080) #The actual drawing space. The canevas can be larger than the window.
         self.canevasBackgroundColor = "white" #Drawing space's background color
-        self.stopOdds = 0.0 #The odd to stop, evaluated every step (i) (Poisson)
-        self.stopDurationSample = [] #Upon stop, a duration will be randomly picked (Uniform distribution)
-
-        with open('ResourceFiles/arrets.csv') as csv_file: #Fill stop settings from data
-            csv_reader = csv.reader(csv_file, delimiter = ",")
-            c = 0
-            period = 120 * (60 * 24) #The file contain data for 120 days with one data per day
-            for row in csv_reader:
-                c += 1
-                if row[1] not in self.stopDurationSample:
-                    self.stopDurationSample.append(int(row[1])) #Duration
-            self.stopOdds = c / period
 
     def resetModel(self): #Settings that are reinitialized every self.simulationCount
         #Core
