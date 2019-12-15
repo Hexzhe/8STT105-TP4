@@ -46,7 +46,7 @@ class Model(object):
         self.x = 628 #Start X
         self.y = 468 #Start Y
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
-        self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
+        self.lineSpacing = 2 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
         self.points = []
         self.points.append((self.x, self.y)) #Mark the first point as visited
         self.isDeadlock = False
@@ -90,12 +90,12 @@ class Model(object):
         previousX = self.x
         previousY = self.y
 
+        if self.checkDeadlock():
+            self.isDeadlock = True
+            return
+
         first = True
         while first or ((self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or ((self.x, self.y) in self.points)):
-            if self.checkDeadlock():
-                self.isDeadlock = True
-                return
-
             first = False
             self.orientation = randbelow(4)
 
