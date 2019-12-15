@@ -6,10 +6,12 @@ from secrets import randbelow
 doRenderTk = True #Enable graphic rendering
 windowSize = (1280, 960)
 backgroundColor = "white"
+points = []
 
 class Model(object):
     def __init__(self, master = None):
         self.initModel()
+        points.append((self.x, self.y)) #Mark the first point as visited
         if master is not None: #Graphic rendering
             self.frame = Frame(master)
             self.frame.pack()
@@ -40,17 +42,13 @@ class Model(object):
 
     def initModel(self):
         #Core
-        self.tick = 0 #Global speed
-        self.n = 200 #Number of step (while i < n)
+        self.tick = 0.1 #Global speed
+        self.n = 1000 #Number of step (while i < n)
         self.i = 0 #Current step
         self.x = 628 #Start X
         self.y = 468 #Start Y
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
-        self.points = []
-        self.points.append((self.x, self.y)) #Mark the first point as visited
-        self.isDeadlock = False
-        self.targetLength = self.n / 2
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
@@ -61,41 +59,13 @@ class Model(object):
         self.lineColorActive = "gold"
         self.clearAfterEach = False #Disable to see a path forming
 
-    def checkDeadlock(self):
-        if self.orientation == 0: #North
-            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
-            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
-            isSouthOk = False
-            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
-        elif self.orientation == 1: #West
-            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
-            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
-            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
-            isEastOk = False
-        elif self.orientation == 2: #South
-            isNorthOk = False
-            isWestOk = (self.x + (self.lineLength + self.lineSpacing), self.y) not in self.points
-            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
-            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
-        elif self.orientation == 3: #East
-            isNorthOk = (self.x, self.y + (self.lineLength + self.lineSpacing)) not in self.points
-            isWestOk = False
-            isSouthOk = (self.x, self.y - (self.lineLength + self.lineSpacing)) not in self.points
-            isEastOk = (self.x - (self.lineLength + self.lineSpacing), self.y) not in self.points
-
-        return not (isNorthOk or isWestOk or isSouthOk or isEastOk)
-
     def update(self): #Model update after each tick
         previousOrientation = self.orientation
         previousX = self.x
         previousY = self.y
 
         first = True
-        while first or ((self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or ((self.x, self.y) in self.points)):
-            if self.checkDeadlock():
-                self.isDeadlock = True
-                return
-
+        while first or (self.orientation != previousOrientation and (self.orientation % 2 == previousOrientation % 2)) or ((self.x, self.y) in points):
             first = False
             self.orientation = randbelow(4)
 
@@ -112,7 +82,7 @@ class Model(object):
                 self.x = previousX - (self.lineLength + self.lineSpacing)
                 self.y = previousY
 
-        self.points.append((self.x, self.y))
+        points.append((self.x, self.y))
 
     def render(self, g): #Render a box at the current coordinates
         if self.orientation == 0: #North
@@ -127,38 +97,27 @@ class Model(object):
         g.create_line(line, width = self.borderWidth, fill = self.lineColor)
 
     def run(self): #Boucle de simulation de la dynamique
-        finalCount = 0
-        while finalCount < self.targetLength:
-            self.g.delete(ALL)
-            self.initModel()
-            for self.i in range(self.n):
-                if self.g is not None: #Pre-rendering
-                    if self.i - 1 > 0 and not self.clearAfterEach:
-                        self.i -= 1
-                        self.lineColor = self.lineColorDefault
-                        self.render(self.g)
-                        self.i += 1
-                    elif self.clearAfterEach:
-                        self.g.delete(ALL)
-            
-                self.update()
-            
-                if self.g is not None: #Rendering
-                    if self.isDeadlock:
-                        self.lineColor = self.lineColorEnd
-                        self.render(self.g)
-                        self.g.update()
-                        break
-
-                    if self.i == self.n - 1:
-                        self.lineColor = self.lineColorEnd
-                    elif self.i > 0:
-                        self.lineColor = self.lineColorActive
-            
+        for self.i in range(self.n):
+            if self.g is not None: #Pre-rendering
+                if self.i - 1 > 0 and not self.clearAfterEach:
+                    self.i -= 1
+                    self.lineColor = self.lineColorDefault
                     self.render(self.g)
-                    self.g.update()
-                    sleep(self.tick)
-            finalCount = self.i
+                    self.i += 1
+                elif self.clearAfterEach:
+                    self.g.delete(ALL)
+
+            self.update() 
+
+            if self.g is not None: #Rendering
+                if self.i == self.n - 1:
+                    self.lineColor = self.lineColorEnd
+                elif self.i > 0:
+                    self.lineColor = self.lineColorActive
+
+                self.render(self.g)
+                self.g.update()
+                sleep(self.tick)
 
 #Execute on run, not on import
 if __name__ == '__main__':

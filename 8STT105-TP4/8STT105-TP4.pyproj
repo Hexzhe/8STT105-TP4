@@ -27,6 +27,9 @@
     <Compile Include="walk-random.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="walk-self-avoiding.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="_8STT105_TP4.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
