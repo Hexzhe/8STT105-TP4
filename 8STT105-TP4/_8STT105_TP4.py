@@ -126,9 +126,9 @@ class Model(object):
 
         g.create_line(line, width = self.borderWidth, fill = self.lineColor)
 
-    def run(self): #Boucle de simulation de la dynamique
+    def run(self): #Simulation loop
         finalCount = 0
-        while finalCount < self.targetLength:
+        while finalCount < self.targetLength: #Quality loop
             self.g.delete(ALL)
             self.initModel()
             for self.i in range(self.n):
