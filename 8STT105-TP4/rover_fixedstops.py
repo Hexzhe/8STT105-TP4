@@ -44,38 +44,43 @@ class Model(object):
         #Speed up from 0 to 100% on right click
         self.tick *= 0.5 * event.x / self.canevasSize[0]
 
-    def initModel(self): #Change settings here
+    def initModel(self): #Settings that are initialized once
         #Core
         self.simulationCount = 5 #Number of valid simulation to run back-to-back
         self.pauseLength = 3 #The pause between each simulation
-        self.tick = 0 #Global speed
-        self.n = 500 #Number of step/minute to reach (while i < n)
-        self.targetN = self.n // 4 #Minimum n to consider the simulation successful
-        self.i = 0 #Current step/minute
-        self.x = 628 #Start X
-        self.y = 468 #Start Y
+        self.tick = 0 #Global speed (pause length after each main loop)
+        self.n = 500 #Maximum number of step (while i < n)
+        self.targetN = self.n // 4 #Minimum n to consider the simulation valid (in the case of a simulation that can fail by e.g. deadlocking itself)
         self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
-        self.speedMin = 1 #Minimum speed
-        self.speed = self.speedMin #The number of line generated in a single tick (startSpeed)
+        self.speedMin = 1 #Minimum speed. Speed represent the number of point drawn in a single step (i)
         self.speedMax = 3 #Maximum speed
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
+        self.stopOdds = 0.05 #The odd to stop, evaluated every step (i) (Poisson)
+        self.stopDuration = 5 #The number of step to skip upon a stop
+
+        #Graphic
+        self.lineWidth = 2 #The width of the line drawn
+        self.lineColorDefault = "gray5" #The default (not start, not end, not highlight) color of the line drawn
+        self.lineColorEnd = "indian red" #The color of the last line of the current simulation
+        self.lineColorHighlight = "gold" #The color of the last line drawn
+        self.clearAfterEachLine = False #Disable to make lines persistend and see a path forming
+        self.canevasSize = (1920, 1080) #The actual drawing space. The canevas can be larger than the window.
+        self.canevasBackgroundColor = "white" #Drawing space's background color
+
+    def resetModel(self): #Settings that are reinitialized every self.simulationCount
+        #Core
+        self.i = 0 #Current step/minute
+        self.x = 628 #current x
+        self.y = 468 #current y
+        self.speed = self.speedMin #The number of line generated in a single tick (startSpeed)
         self.points = [(self.x, self.y)] #Point history
         self.isDeadlock = False
 
         #Graphic
         self.orientation = 0 #0=N, 1=W, 2=S, 3=E
-        self.borderWidth = 2
-        self.lineColorDefault = "gray5"
-        self.lineColor = "medium sea green" #Set different than default to highlight the first line
-        self.lineColorEnd = "indian red"
-        self.lineColorActive = "gold"
-        self.clearAfterEach = False #Disable to see a path forming
-        self.canevasSize = (1920, 1080) #The canevas size is larger than the window in case the drawing overflow
-        self.canevasBackgroundColor = "white"
+        self.lineColor = "medium sea green" #Current line color (set different than default to highlight the first line)
         self.orientations = [self.orientation] #Orientation history
-        self.stopOdds = 0.05 #The odd to stop evaluated every minute (i) (Poisson)
-        self.stopDuration = 5 #Upon stop, will skip this amound of i/time/minute (won't pause the drawing)
 
     def writeResult(self):
         f = open("ResourceFiles/Results/result-rover-fixedstops.csv", "a+")
@@ -152,26 +157,26 @@ class Model(object):
             elif self.orientations[(len(self.points) - 1) - (j - 1)] == 3: #East
                 line = (self.points[(len(self.points) - 1) - (j - 1)][0], self.points[(len(self.points) - 1) - (j - 1)][1], self.points[(len(self.points) - 2) - (j - 1)][0] - self.lineSpacing, self.points[(len(self.points) - 2) - (j - 1)][1])
 
-            g.create_line(line, width = self.borderWidth, fill = self.lineColor)
+            g.create_line(line, width = self.lineWidth, fill = self.lineColor)
 
     def run(self): #Simulation loop
         for j in range(self.simulationCount):
             finalCount = 0
             while finalCount < self.targetN: #Quality insurance loop
                 self.g.delete(ALL)
-                self.initModel()
+                self.resetModel()
                 for self.i in range(self.n):
 
                     if random.uniform(0, 1) < self.stopOdds: #Stop
-                        self.i += random.choice(self.stopDurationSample)
+                        self.i += self.stopDuration
                         continue
                     
                     if self.g is not None: #Pre-rendering
-                        if self.i - 1 > 0 and not self.clearAfterEach:
+                        if self.i - 1 > 0 and not self.clearAfterEachLine:
                             self.lineColor = self.lineColorDefault
                             self.render(self.g)
                             self.g.update()
-                        elif self.clearAfterEach:
+                        elif self.clearAfterEachLine:
                             self.g.delete(ALL)
 
                     if (self.i + 1) % self.speedChangeInderval == 0: #Change speed
@@ -200,7 +205,7 @@ class Model(object):
                         if self.i == self.n - 1:
                             self.lineColor = self.lineColorEnd
                         elif self.i > 0:
-                            self.lineColor = self.lineColorActive
+                            self.lineColor = self.lineColorHighlight
                 
                         self.render(self.g)
                         self.g.update()
