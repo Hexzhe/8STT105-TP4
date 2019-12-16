@@ -75,11 +75,11 @@ class Model(object):
         self.y = 468 #current y
         self.speed = self.speedMin #The number of line generated in a single tick (startSpeed)
         self.points = [(self.x, self.y)] #Point history
-        self.isDeadlock = False
+        self.isDeadlock = False #Determine the current deadlock status. Do not enable.
 
         #Graphic
-        self.orientation = 0 #0=N, 1=W, 2=S, 3=E
         self.lineColor = "medium sea green" #Current line color (set different than default to highlight the first line)
+        self.orientation = 0 #Current orientation. Only relevant on line drawn where i > 0. 0=N, 1=W, 2=S, 3=E
         self.orientations = [self.orientation] #Orientation history
 
     def writeResult(self):

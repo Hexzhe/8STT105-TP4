@@ -70,7 +70,7 @@ class Model(object):
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
         self.stopOdds = 0.0 #The odd to stop, evaluated every step (i) (Poisson)
         self.stopDurationSample = [] #Upon stop, a duration will be randomly picked (Uniform distribution)
-        fillStopDurationSample()
+        fillStopDurationSample() #Fill the stopDurationSample with data
 
         #Graphic
         self.lineWidth = 2 #The width of the line drawn
@@ -88,11 +88,11 @@ class Model(object):
         self.y = 468 #current y
         self.speed = self.speedMin #The number of line generated in a single tick (startSpeed)
         self.points = [(self.x, self.y)] #Point history
-        self.isDeadlock = False
+        self.isDeadlock = False #Determine the current deadlock status. Do not enable.
 
         #Graphic
-        self.orientation = 0 #0=N, 1=W, 2=S, 3=E
         self.lineColor = "medium sea green" #Current line color (set different than default to highlight the first line)
+        self.orientation = 0 #Current orientation. Only relevant on line drawn where i > 0. 0=N, 1=W, 2=S, 3=E
         self.orientations = [self.orientation] #Orientation history
 
     def writeResult(self):
