@@ -46,12 +46,12 @@ class Model(object):
 
     def initModel(self): #Settings that are initialized once
         #Core
-        self.simulationCount = 5 #Number of valid simulation to run back-to-back
-        self.pauseLength = 3 #The pause between each simulation
+        self.simulationCount = 100 #Number of valid simulation to run back-to-back
+        self.pauseLength = 0 #The pause between each simulation
         self.tick = 0 #Global speed (pause length after each main loop)
-        self.n = 500 #Maximum number of step (while i < n)
-        self.targetN = self.n // 4 #Minimum n to consider the simulation valid (in the case of a simulation that can fail by e.g. deadlocking itself)
-        self.lineLength = 10 #Determine the x and y move size even in non-graphic mode
+        self.n = 50 #Maximum number of step (while i < n)
+        self.targetN = self.n #Minimum n to consider the simulation valid (in the case of a simulation that can fail by e.g. deadlocking itself)
+        self.lineLength = 1 #Determine the x and y move size even in non-graphic mode
         self.lineSpacing = 0 #Determine the x and y added padding (on top of lineLength) even in non-graphic mode
         self.speedMin = 1 #Minimum speed. Speed represent the number of point drawn in a single step (i)
         self.speedMax = 3 #Maximum speed
@@ -204,7 +204,7 @@ class Model(object):
                         self.render(self.g)
                         self.g.update()
                         sleep(self.tick)
-                finalCount = self.i
+                finalCount = self.i + 1
             self.writeResult()
             sleep(self.pauseLength)
         popupmsg("Simulation run: " + str(self.simulationCount) + "\nn: " + str(self.n) + "\nMinimum target: " + str(self.targetN) + "\n\n Check ResourceFiles/Results/result-rover-varspeed.csv for results.\nYou can now exit.", "Done!")
