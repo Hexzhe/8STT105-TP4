@@ -70,7 +70,7 @@ class Model(object):
         self.speedChangeInderval = 12 #The interval of i at which speed is going to change
         self.stopOdds = 0.0 #The odd to stop, evaluated every step (i) (Poisson)
         self.stopDurationSample = [] #Upon stop, a duration will be randomly picked (Uniform distribution)
-        fillStopDurationSample() #Fill the stopDurationSample with data
+        self.fillStopDurationSample() #Fill the stopDurationSample with data
 
         #Graphic
         self.lineWidth = 2 #The width of the line drawn
@@ -179,11 +179,6 @@ class Model(object):
                 self.g.delete(ALL)
                 self.resetModel()
                 for self.i in range(self.n):
-
-                    if random.uniform(0, 1) < self.stopOdds: #Stop
-                        self.i += random.choice(self.stopDurationSample)
-                        continue
-                    
                     if self.g is not None: #Pre-rendering
                         if self.i - 1 > 0 and not self.clearAfterEachLine:
                             self.lineColor = self.lineColorDefault
@@ -191,6 +186,11 @@ class Model(object):
                             self.g.update()
                         elif self.clearAfterEachLine:
                             self.g.delete(ALL)
+
+                    if random.uniform(0, 1) < self.stopOdds: #Stop
+                        self.i += random.choice(self.stopDurationSample) #In fact, we just add the time and continue, not a real stop
+                        self.speed = self.speedMin #After a stop, we start back in first speed
+                        continue
 
                     if (self.i + 1) % self.speedChangeInderval == 0: #Change speed
                         if bool(random.getrandbits(1)): #Faster
